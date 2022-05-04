@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["xefer"]
 license = "MIT"
+description = "A wrapper for nulled.to's updated authentication system implemented in rust"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
