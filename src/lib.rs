@@ -35,10 +35,11 @@ struct SecondAuthData {
     #[serde(rename = "mid")]
     _mid: String,
     name: String,
+    #[serde(rename = "Likes")]
     likes: String,
     #[serde(rename = "groups")]
     _groups: Vec<String>,
-    extra: String,
+    extra: u32,
     #[serde(rename = "message")]
     _message: String,
 }
@@ -96,12 +97,14 @@ impl Authenticate {
     /// fn main() {
     ///     let auth_key = String::from("auth_key");
     ///     let program_id = String::from("program_id");
+    ///     let program_secret = String::from("program_secret");
     ///     let minimum_likes = 0;
     ///     let minimum_extra = nulled_auth::Ranks::Nova;
     ///     let display_welcome = false;
     ///
     ///     let authentication = nulled_auth::Authenticate::new(
     ///         program_id,
+    ///         program_secret,
     ///         minimum_likes,
     ///         minimum_extra,
     ///         display_welcome
@@ -133,7 +136,12 @@ impl Authenticate {
             Ok(response) => {
                 let json = match response.json::<FirstAuthRequest>().await {
                     Ok(json) => json,
-                    Err(_) => return (false, "Failed to deserialize json response".to_owned()),
+                    Err(_) => {
+                        return (
+                            false,
+                            "Failed to deserialize first json response".to_owned(),
+                        );
+                    }
                 };
 
                 let request_success = json.status;
@@ -148,7 +156,10 @@ impl Authenticate {
                         let json = match response.json::<SecondAuthRequest>().await {
                             Ok(json) => json,
                             Err(_) => {
-                                return (false, "Failed to deserialize json response".to_owned())
+                                return (
+                                    false,
+                                    "Failed to deserialize second json response".to_owned(),
+                                );
                             }
                         };
 
@@ -156,12 +167,7 @@ impl Authenticate {
 
                         let name = data.name;
                         let likes = data.likes.parse::<u32>().unwrap();
-                        /*let groups: Vec<u32> = data
-                        .groups
-                        .iter()
-                        .map(|g| g.parse::<u32>().unwrap())
-                        .collect();*/
-                        let extra = data.extra.parse::<u32>().unwrap();
+                        let extra = data.extra;
 
                         if likes < self.minimum_likes {
                             return (false, "Insufficient amount of likes".to_owned());
@@ -177,7 +183,7 @@ impl Authenticate {
                         if self.display_welcome {
                             println!("Welcome {}!", name);
                         }
-                        return (true, format!("Authenticated user: {} successfully", name));
+                        return (true, format!("Authenticated user: {} successfully", "name"));
                     }
                     Err(err) => return (false, err),
                 }
@@ -188,14 +194,17 @@ impl Authenticate {
     }
 
     fn has_rank_or_greater(&self, rank: u32) -> bool {
-        let rank_value = match &self.minimum_extra {
+        let mut rank_value = match &self.minimum_extra {
             Ranks::Nova => Ranks::Nova as u32,
             Ranks::Aqua => Ranks::Aqua as u32,
             Ranks::VIP => Ranks::VIP as u32,
             Ranks::None => Ranks::None as u32,
         };
 
-        rank_value >= rank
+        if rank_value > 2000 {
+            rank_value = 1336;
+        }
+        rank >= rank_value
     }
 }
 
