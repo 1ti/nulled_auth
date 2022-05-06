@@ -6,7 +6,7 @@ use serde::{self, Deserialize};
 pub enum Ranks {
     Nova = 1338,
     Aqua = 1337,
-    VIP = 999,
+    VIP = 9999,
     None = 0,
 }
 
