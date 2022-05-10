@@ -94,15 +94,16 @@ impl Authenticate {
     /// # Examples
     ///
     /// ```
+    /// use nulled_auth::{Authenticate, Ranks}
     /// fn main() {
     ///     let auth_key = String::from("auth_key");
     ///     let program_id = String::from("program_id");
     ///     let program_secret = String::from("program_secret");
     ///     let minimum_likes = 0;
-    ///     let minimum_extra = nulled_auth::Ranks::Nova;
+    ///     let minimum_extra = Ranks::Nova;
     ///     let display_welcome = false;
     ///
-    ///     let authentication = nulled_auth::Authenticate::new(
+    ///     let authentication = Authenticate::new(
     ///         program_id,
     ///         program_secret,
     ///         minimum_likes,
